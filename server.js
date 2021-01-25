@@ -3,7 +3,7 @@ const startInquirer = require('./inquirer/inquirerScript')
 
 db.connect( err => {
     if (err) throw err;
-    console.log(`Connected as id ${connection.threadId}`)
+    console.log(`Connected as id ${db.threadId}`)
 
     startInquirer()
 })

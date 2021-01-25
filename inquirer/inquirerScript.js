@@ -3,7 +3,7 @@ const requests = require('../requests/index')
 
 
 const viewDepartments = () => {
-    requests.department
+    requests.department.viewAllDepartments()
 }
 
 
@@ -28,7 +28,7 @@ const startInquirer = () => {
         .then( answer => {
             switch (answer.mainMenu) {
                 case 'View all Departments':
-                    
+                    viewDepartments()
                     break;
                 case 'View all Roles':
                 
