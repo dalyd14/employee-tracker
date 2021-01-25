@@ -7,6 +7,9 @@
   - [Testing](#testing)
   - [Questions](#questions)
 
+## Walkthrough Video
+[walkthrough video of app](https://drive.google.com/file/d/1aBKCsH8lkMxKD7WnWDBBWhkW87jb4xni/view)
+
 ## Project Description
 This is a terminal side app that will manage your employees. You can manage departments, roles, and of course, employees. This app was part of a bootcamp weekly assignment and has all the fundamentals of MySQL and relational databases in it.
 
