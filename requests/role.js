@@ -31,7 +31,22 @@ const addRole = (title, salary, department_id) => {
     })
 }
 
+const deleteRole = (roleID) => {
+    return new Promise ((resolve) => {
+        db.query(
+            `DELETE FROM role
+             WHERE id = ?`,
+            [roleID],
+            (err, res) => {
+                if (err) throw err;
+                resolve(`You have successfully deleted a role.`)  
+            }
+        )
+    })
+}
+
 module.exports = {
     viewAllRoles,
-    addRole
+    addRole,
+    deleteRole
 }

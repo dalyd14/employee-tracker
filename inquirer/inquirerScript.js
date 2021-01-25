@@ -25,6 +25,32 @@ const addDepartment = () => {
             });
         })
 }
+const deleteDepartment = () => {
+    requests.department.viewAllDepartments()
+    .then(departments => {
+        inquirer
+        .prompt([
+            {
+                type: 'list',
+                name: 'selectDepartment',
+                message: 'Select a department to delete.',
+                choices: departments.map(department => {
+                    return {
+                        name: department.name,
+                        value: department.id
+                    }
+                })
+            }
+        ])
+        .then( answer => {
+            const departmentID = answer.selectDepartment
+            requests.department.deleteDepartment(departmentID)
+            .then(results => {
+                showResults(results)
+            });
+        })
+    })
+}
 
 // THE ROLE QUERIES
 const viewRoles = () => {
@@ -64,6 +90,33 @@ const addRole = () => {
         })        
     });
 }
+const deleteRole = () => {
+    requests.role.viewAllRoles()
+    .then(roles => {
+        inquirer
+        .prompt([
+            {
+                type: 'list',
+                name: 'selectRole',
+                message: 'Select a role to delete.',
+                choices: roles.map(role => {
+                    return {
+                        name: role.title,
+                        value: role.id
+                    }
+                })
+            }
+        ])
+        .then( answer => {
+            const roleID = answer.selectRole
+            requests.role.deleteRole(roleID)
+            .then(results => {
+                showResults(results)
+            });
+        })
+    })
+}
+
 
 // THE EMPLOYEE QUERIES
 const viewEmployees = () => {
@@ -158,7 +211,7 @@ const addEmployee = () => {
             ])
             .then( answer => {
                 const roleID = roles.find(role => role.title === answer.newEmployeeRole).id
-                const managerID = ((answer.newEmployeeManager) === 'None' ? 'NULL' : possibleManagers.indexOf(answer.newEmployeeManager)+1)
+                const managerID = ((answer.newEmployeeManager) === 'None' ? null : possibleManagers.indexOf(answer.newEmployeeManager)+1)
                 requests.employee.addEmployee(answer.newEmployeeFirstName, answer.newEmployeeLastName, roleID, managerID)
                 .then(results => {
                     showResults(results)
@@ -234,6 +287,32 @@ const updateEmployeeManager = () => {
         })
     });
 }
+const deleteEmployee = () => {
+    requests.employee.viewAllEmployees()
+    .then(employees => {
+        inquirer
+        .prompt([
+            {
+                type: 'list',
+                name: 'selectEmployee',
+                message: 'Select an employee to delete.',
+                choices: employees.map(employee => {
+                    return {
+                        name: `${employee.first_name} ${employee.last_name}`,
+                        value: employee.id
+                    }
+                })
+            }
+        ])
+        .then( answer => {
+            const employeeID = answer.selectEmployee
+            requests.employee.deleteEmployee(employeeID)
+            .then(results => {
+                showResults(results)
+            });
+        })
+    })
+}
 
 // EXITS THE PROGRAM
 const exitProgram = () => {
@@ -285,13 +364,13 @@ const decideWhatToDo = (answer) => {
             updateEmployeeManager()
             break;
         case 'Delete an Employee':
-            addEmployee()
+            deleteEmployee()
             break;
         case 'Delete a Role':
-            updateEmployeeRole()
+            deleteRole()
             break;
         case 'Delete a Department':
-            updateEmployeeManager()
+            deleteDepartment()
             break;
         case 'Exit':
             exitProgram()

@@ -133,6 +133,20 @@ const updateEmployeeManager = (employeeID, managerID) => {
     })
 }
 
+const deleteEmployee = (employeeID) => {
+    return new Promise ((resolve) => {
+        db.query(
+            `DELETE FROM employee
+             WHERE id = ?`,
+            [employeeID],
+            (err, res) => {
+                if (err) throw err;
+                resolve(`You have successfully deleted an employee.`)  
+            }
+        )
+    })
+}
+
 module.exports = {
     viewAllEmployees,
     addEmployee,
@@ -140,5 +154,6 @@ module.exports = {
     updateEmployeeManager,
     viewEmployeesByManager,
     viewEmployeesByDepartment,
-    viewManagers
+    viewManagers,
+    deleteEmployee
 }

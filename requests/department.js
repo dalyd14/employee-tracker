@@ -28,7 +28,22 @@ const addDepartment = (name) => {
     })
 }
 
+const deleteDepartment = (departmentID) => {
+    return new Promise ((resolve) => {
+        db.query(
+            `DELETE FROM department
+             WHERE id = ?`,
+            [departmentID],
+            (err, res) => {
+                if (err) throw err;
+                resolve(`You have successfully deleted a department.`)  
+            }
+        )
+    })
+}
+
 module.exports = {
     viewAllDepartments,
-    addDepartment
+    addDepartment,
+    deleteDepartment
 }
