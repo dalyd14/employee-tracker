@@ -6,6 +6,10 @@ const viewDepartments = () => {
     requests.department.viewAllDepartments()
 }
 
+const viewRoles = () => {
+    requests.role.viewAllRoles()
+}
+
 
 const startInquirer = () => {
     inquirer
@@ -31,7 +35,7 @@ const startInquirer = () => {
                     viewDepartments()
                     break;
                 case 'View all Roles':
-                
+                    viewRoles()
                     break;
                 case 'View all Employees':
             
