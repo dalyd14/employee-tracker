@@ -42,8 +42,26 @@ const deleteDepartment = (departmentID) => {
     })
 }
 
+const showDepartmentBudget = (departmentID) => {
+    return new Promise ((resolve) => {
+        db.query(
+            `SELECT department.name AS department, SUM(salary) AS budget FROM employee
+             LEFT JOIN role ON role.id = role_id
+             LEFT JOIN department ON department_id = department.id
+             WHERE department.id = ?
+             GROUP BY department.id`,
+            [departmentID],
+            (err, res) => {
+                if (err) throw err;
+                resolve(res)  
+            }
+        )
+    })
+}
+
 module.exports = {
     viewAllDepartments,
     addDepartment,
-    deleteDepartment
+    deleteDepartment,
+    showDepartmentBudget
 }

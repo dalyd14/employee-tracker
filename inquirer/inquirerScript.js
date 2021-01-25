@@ -51,6 +51,32 @@ const deleteDepartment = () => {
         })
     })
 }
+const viewDepartmentBudgets = () => {
+    requests.department.viewAllDepartments()
+    .then(departments => {
+        inquirer
+        .prompt([
+            {
+                type: 'list',
+                name: 'selectDepartment',
+                message: 'Select a department to see budget.',
+                choices: departments.map(department => {
+                    return {
+                        name: department.name,
+                        value: department.id
+                    }
+                })
+            }
+        ])
+        .then( answer => {
+            const departmentID = answer.selectDepartment
+            requests.department.showDepartmentBudget(departmentID)
+            .then(results => {
+                showResults(results)
+            });
+        })
+    })
+}
 
 // THE ROLE QUERIES
 const viewRoles = () => {
@@ -348,6 +374,9 @@ const decideWhatToDo = (answer) => {
         case 'View all Employees':
             viewEmployees()
             break;
+        case 'Show Department Budgets':
+            viewDepartmentBudgets()
+            break;
         case 'Add a Department':
             addDepartment();
             break;
@@ -396,6 +425,7 @@ const mainMenu = () => {
                         'View all Employees',
                         'View Employees by Manager',
                         'View Employees by Department',
+                        'Show Department Budgets',
                         'Add a Department', 
                         'Add a Role', 
                         'Add an Employee', 
