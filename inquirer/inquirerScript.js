@@ -35,7 +35,7 @@ const viewRoles = () => {
 }
 const addRole = () => {
     requests.department.viewAllDepartments()
-    .then(results => {
+    .then(departments => {
         inquirer
         .prompt([
             {
@@ -52,18 +52,17 @@ const addRole = () => {
                 type: 'list',
                 name: 'newRoleDepartment',
                 message: 'Select the department this role is in.',
-                choices: results.map(result => result.name)
+                choices: departments.map(department => department.name)
             }
         ])
         .then( answer => {
-            const depID = results.find(result => result.name === answer.newRoleDepartment).id
+            const depID = departments.find(department => department.name === answer.newRoleDepartment).id
             requests.role.addRole(answer.newRoleName, answer.newRoleSalary, depID)
             .then(results => {
                 showResults(results)
             });
         })        
     });
-
 }
 
 // THE EMPLOYEE QUERIES
@@ -72,6 +71,51 @@ const viewEmployees = () => {
     .then(results => {
         showResults(results)
     });
+}
+const addEmployee = () => {
+    requests.role.viewAllRoles()
+    .then(roles => {
+        requests.employee.viewAllEmployees()
+        .then(employees => {
+            const possibleManagers = employees.map(employee => `${employee.emp_first} ${employee.emp_last}`)
+            possibleManagers.push('None')
+            inquirer
+            .prompt([
+                {
+                    type: 'input',
+                    name: 'newEmployeeFirstName',
+                    message: 'Enter the first name of the new employee.'
+                },
+                {
+                    type: 'input',
+                    name: 'newEmployeeLastName',
+                    message: 'Enter the last name of the new employee.'
+                },
+                {
+                    type: 'list',
+                    name: 'newEmployeeRole',
+                    message: 'Select the role that this employee has.',
+                    choices: roles.map(role => role.title)
+                },
+                {
+                    type: 'list',
+                    name: 'newEmployeeManager',
+                    message: 'Select a manager that this employee reports to. (Select None if they do not have a manager)',
+                    choices: possibleManagers
+                }
+            ])
+            .then( answer => {
+                const roleID = roles.find(role => role.title === answer.newEmployeeRole).id
+                console.log(answer.newEmployeeManager)
+                const managerID = ((answer.newEmployeeManager) === 'None' ? 'NULL' : possibleManagers.indexOf(answer.newEmployeeManager)+1)
+                requests.employee.addEmployee(answer.newEmployeeFirstName, answer.newEmployeeLastName, roleID, managerID)
+                .then(results => {
+                    showResults(results)
+                });
+            })        
+        });    
+    })
+    
 }
 
 // EXITS THE PROGRAM
@@ -106,7 +150,7 @@ const decideWhatToDo = (answer) => {
             addRole()
             break;
         case 'Add an Employee':
-        
+            addEmployee()
             break;
         case 'Update an Employee Role':
         

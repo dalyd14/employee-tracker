@@ -23,6 +23,23 @@ const viewAllEmployees = () => {
     })
 }
 
+const addEmployee = (first_name, last_name, role_id, manager_id) => {
+    return new Promise ((resolve) => {
+        db.query(
+            `INSERT INTO employee
+                (first_name, last_name, role_id, manager_id)
+            VALUES
+                (?,?,?,?);`,
+            [first_name, last_name, role_id, manager_id],
+            (err, res) => {
+                if (err) throw err;
+                resolve(`You have successfully added ${first_name} ${last_name} as an employee.`)
+            }
+        )           
+    })
+}
+
 module.exports = {
     viewAllEmployees,
+    addEmployee
 }
