@@ -10,6 +10,9 @@
 ## Project Description
 This is a terminal side app that will manage your employees. You can manage departments, roles, and of course, employees. This app was part of a bootcamp weekly assignment and has all the fundamentals of MySQL and relational databases in it.
 
+## Screenshot
+![Screenshot of Employee Tracker App](./images/screenshot.PNG)
+
 ## Installation
 1. This is a Node.js application: please make sure you have [node downloaded](https://nodejs.org/en/download/)
 2. Create a local repository and [clone](https://docs.github.com/en/free-pro-team@latest/github/creating-cloning-and-archiving-repositories/cloning-a-repository) this GitHub repository to it.
