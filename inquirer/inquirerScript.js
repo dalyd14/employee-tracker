@@ -72,12 +72,64 @@ const viewEmployees = () => {
         showResults(results)
     });
 }
+const viewEmployeesByManager = () => {
+    requests.employee.viewManagers()
+    .then(managers => {
+        inquirer
+        .prompt([
+            {
+                type: 'list',
+                name: 'selectManager',
+                message: 'Select a manager to see their reports.',
+                choices: managers.map(manager => {
+                    return {
+                        name: `${manager.first_name} ${manager.last_name}`,
+                        value: manager.manager_id
+                    }
+                })
+            }
+        ])
+        .then( answer => {
+            const employeeID = answer.selectManager
+            requests.employee.viewEmployeesByManager(employeeID)
+            .then(results => {
+                showResults(results)
+            });
+        })        
+    });
+}
+const viewEmployeesByDepartment = () => {
+    requests.department.viewAllDepartments()
+    .then(departments => {
+        inquirer
+        .prompt([
+            {
+                type: 'list',
+                name: 'selectDepartment',
+                message: 'Select a department to see their employees.',
+                choices: departments.map(department => {
+                    return {
+                        name: department.name,
+                        value: department.id
+                    }
+                })
+            }
+        ])
+        .then( answer => {
+            const departmentID = answer.selectDepartment
+            requests.employee.viewEmployeesByDepartment(departmentID)
+            .then(results => {
+                showResults(results)
+            });
+        })        
+    });
+}
 const addEmployee = () => {
     requests.role.viewAllRoles()
     .then(roles => {
         requests.employee.viewAllEmployees()
         .then(employees => {
-            const possibleManagers = employees.map(employee => `${employee.emp_first} ${employee.emp_last}`)
+            const possibleManagers = employees.map(employee => `${employee.first_name} ${employee.last_name}`)
             possibleManagers.push('None')
             inquirer
             .prompt([
@@ -106,7 +158,6 @@ const addEmployee = () => {
             ])
             .then( answer => {
                 const roleID = roles.find(role => role.title === answer.newEmployeeRole).id
-                console.log(answer.newEmployeeManager)
                 const managerID = ((answer.newEmployeeManager) === 'None' ? 'NULL' : possibleManagers.indexOf(answer.newEmployeeManager)+1)
                 requests.employee.addEmployee(answer.newEmployeeFirstName, answer.newEmployeeLastName, roleID, managerID)
                 .then(results => {
@@ -115,7 +166,73 @@ const addEmployee = () => {
             })        
         });    
     })
-    
+}
+const updateEmployeeRole = () => {
+    requests.role.viewAllRoles()
+    .then(roles => {
+        requests.employee.viewAllEmployees()
+        .then(employees => {
+            const employeeOptions = employees.map(employee => `${employee.first_name} ${employee.last_name}`)
+            inquirer
+            .prompt([
+                {
+                    type: 'list',
+                    name: 'updateEmployee',
+                    message: 'Select an employee to change their role.',
+                    choices: employeeOptions
+                }, 
+                {
+                    type: 'list',
+                    name: 'newEmployeeRole',
+                    message: 'Select the role that this employee has.',
+                    choices: roles.map(role => role.title)
+                }
+            ])
+            .then( answer => {
+                const employeeID = employeeOptions.indexOf(answer.updateEmployee)+1
+                const roleID = roles.find(role => role.title === answer.newEmployeeRole).id
+                requests.employee.updateEmployeeRole(employeeID, roleID)
+                .then(results => {
+                    showResults(results)
+                });
+            })        
+        });    
+    })
+}
+const updateEmployeeManager = () => {
+    requests.employee.viewAllEmployees()
+    .then(employees => {
+        const allEmployees = employees.map(employee => `${employee.first_name} ${employee.last_name}`)
+        const employeeOptions = employees.map(employee => `${employee.first_name} ${employee.last_name}`)
+        inquirer
+        .prompt([
+            {
+                type: 'list',
+                name: 'updateEmployee',
+                message: 'Select an employee to change their manager.',
+                choices: employeeOptions
+            }, 
+            {
+                type: 'list',
+                name: 'newEmployeeManager',
+                message: 'Select the manager that this employee has.',
+                choices: function(answers) {
+                    const selectedEmployee = answers.updateEmployee
+                    employeeOptions.push('None')
+                    employeeOptions.splice(employeeOptions.indexOf(selectedEmployee), 1)
+                    return employeeOptions
+                }
+            }
+        ])
+        .then( answer => {
+            const employeeID = allEmployees.indexOf(answer.updateEmployee)+1
+            const managerID = allEmployees.indexOf(answer.newEmployeeManager)+1
+            requests.employee.updateEmployeeManager(employeeID, managerID)
+            .then(results => {
+                showResults(results)
+            });
+        })
+    });
 }
 
 // EXITS THE PROGRAM
@@ -143,6 +260,15 @@ const decideWhatToDo = (answer) => {
         case 'View all Employees':
             viewEmployees()
             break;
+        case 'View Employees by Manager':
+            viewEmployeesByManager()
+            break;
+        case 'View Employees by Department':
+            viewEmployeesByDepartment()
+            break;
+        case 'View all Employees':
+            viewEmployees()
+            break;
         case 'Add a Department':
             addDepartment();
             break;
@@ -153,7 +279,19 @@ const decideWhatToDo = (answer) => {
             addEmployee()
             break;
         case 'Update an Employee Role':
-        
+            updateEmployeeRole()
+            break;
+        case 'Update an Employee Manager':
+            updateEmployeeManager()
+            break;
+        case 'Delete an Employee':
+            addEmployee()
+            break;
+        case 'Delete a Role':
+            updateEmployeeRole()
+            break;
+        case 'Delete a Department':
+            updateEmployeeManager()
             break;
         case 'Exit':
             exitProgram()
@@ -176,11 +314,17 @@ const mainMenu = () => {
                     choices: [
                         'View all Departments', 
                         'View all Roles', 
-                        'View all Employees', 
+                        'View all Employees',
+                        'View Employees by Manager',
+                        'View Employees by Department',
                         'Add a Department', 
                         'Add a Role', 
                         'Add an Employee', 
                         'Update an Employee Role',
+                        'Update an Employee Manager',
+                        'Delete a Department', 
+                        'Delete a Role', 
+                        'Delete an Employee', 
                         'Exit'
                     ]
                 }
