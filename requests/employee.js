@@ -1,5 +1,4 @@
 const db = require('../db/database')
-const cTable = require('console.table')
 
 const viewAllEmployees = () => {
     return new Promise ((resolve) => {
@@ -18,7 +17,6 @@ const viewAllEmployees = () => {
             LEFT JOIN employee b ON b.id = a.manager_id;`,
             function(err, res) {
                 if (err) throw err;
-                res = cTable.getTable(res)
                 resolve(res)
             }
         )           

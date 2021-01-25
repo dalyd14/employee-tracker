@@ -1,14 +1,14 @@
 const inquirer = require("inquirer");
+const cTable = require('console.table')
 const requests = require('../requests/index')
 
-
+// THE DEPARTMENT QUERIES
 const viewDepartments = () => {
     requests.department.viewAllDepartments()
     .then(results => {
         showResults(results)
-    })
+    });
 }
-
 const addDepartment = () => {
     inquirer
         .prompt([
@@ -26,13 +26,47 @@ const addDepartment = () => {
         })
 }
 
+// THE ROLE QUERIES
 const viewRoles = () => {
     requests.role.viewAllRoles()
     .then(results => {
         showResults(results)
     });
 }
+const addRole = () => {
+    requests.department.viewAllDepartments()
+    .then(results => {
+        inquirer
+        .prompt([
+            {
+                type: 'input',
+                name: 'newRoleName',
+                message: 'Enter the name of the role you would like to add.'
+            },
+            {
+                type: 'number',
+                name: 'newRoleSalary',
+                message: 'Enter the salary of the role.'
+            },
+            {
+                type: 'list',
+                name: 'newRoleDepartment',
+                message: 'Select the department this role is in.',
+                choices: results.map(result => result.name)
+            }
+        ])
+        .then( answer => {
+            const depID = results.find(result => result.name === answer.newRoleDepartment).id
+            requests.role.addRole(answer.newRoleName, answer.newRoleSalary, depID)
+            .then(results => {
+                showResults(results)
+            });
+        })        
+    });
 
+}
+
+// THE EMPLOYEE QUERIES
 const viewEmployees = () => {
     requests.employee.viewAllEmployees()
     .then(results => {
@@ -40,32 +74,36 @@ const viewEmployees = () => {
     });
 }
 
+// EXITS THE PROGRAM
 const exitProgram = () => {
     requests.exitProgram();
 }
 
+// CONSOLE LOGS THE RESULTS FROM THE QUERIES
 const showResults = (results => {
+    res = cTable.getTable(results)
     console.log('\n')
-    console.log(results)
+    console.log(res)
     inquire()
 })
 
+// MAIN MENU INQUIRY
 const decideWhatToDo = (answer) => {
     switch (answer) {
         case 'View all Departments':
-            viewDepartments();
+            viewDepartments()
             break;
         case 'View all Roles':
-            viewRoles();
+            viewRoles()
             break;
         case 'View all Employees':
-            viewEmployees();
+            viewEmployees()
             break;
         case 'Add a Department':
             addDepartment();
             break;
         case 'Add a Role':
-        
+            addRole()
             break;
         case 'Add an Employee':
         

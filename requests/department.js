@@ -1,5 +1,4 @@
 const db = require('../db/database')
-const cTable = require('console.table')
 
 const viewAllDepartments = () => {
     return new Promise ((resolve) => {
@@ -7,7 +6,6 @@ const viewAllDepartments = () => {
             'SELECT * FROM department;',
             (err, res) => {
                 if (err) throw err;
-                res = cTable.getTable(res)
                 resolve(res)
             }
         )           
@@ -28,7 +26,6 @@ const addDepartment = (name) => {
             }
         )           
     })
-
 }
 
 module.exports = {

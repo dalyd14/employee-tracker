@@ -1,5 +1,4 @@
 const db = require('../db/database')
-const cTable = require('console.table')
 
 const viewAllRoles = () => {
     return new Promise ((resolve) => {
@@ -10,13 +9,29 @@ const viewAllRoles = () => {
             ORDER BY role.salary DESC;`,
             function(err, res) {
                 if (err) throw err;
-                res = cTable.getTable(res)
                 resolve(res)
             }
         )
     })
 }
 
+const addRole = (title, salary, department_id) => {
+    return new Promise ((resolve) => {
+        db.query(
+            `INSERT INTO role
+                (title, salary, department_id)
+            VALUES
+                (?,?,?);`,
+            [title, salary, department_id],
+            (err, res) => {
+                if (err) throw err;
+                resolve(`You have successfully added the ${title} role.`)
+            }
+        )           
+    })
+}
+
 module.exports = {
     viewAllRoles,
+    addRole
 }
