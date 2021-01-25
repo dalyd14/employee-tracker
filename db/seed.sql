@@ -18,3 +18,20 @@ VALUES
     ("Kingsguard", 50000, 1),
     ("Prince", 100000, 3),
     ("Queens Council", 150000, 4);
+
+INSERT INTO employee
+    (first_name, last_name, role_id, manager_id)
+VALUES
+    ("Robert", "Baratheon", 3, NULL),
+    ("Dany", "Targaryen", 4, NULL),
+    ("Jeoffrey", "Baratheon", 3, 1),
+    ("Ned", "Stark", 2, 1),
+    ("Robb", "Stark", 1, 4),
+    ("Bran", "Stark", 6, NULL),
+    ("Jon", "Snow", 5, NULL),
+    ("Tyrion", "Lannister", 2, 3),
+    ("Jaime", "Lannister", 7, 3),
+    ("Tommen", "Baratheon", 8, 3),
+    ("Jorah", "Mormont", 9, 2),
+    ("John", "Aryyn", 2, 1),
+    ("Old", "Dude", 6, NULL);

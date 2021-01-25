@@ -10,6 +10,10 @@ const viewRoles = () => {
     requests.role.viewAllRoles()
 }
 
+const viewEmployees = () => {
+    requests.employee.viewAllEmployees()
+}
+
 
 const startInquirer = () => {
     inquirer
@@ -38,7 +42,7 @@ const startInquirer = () => {
                     viewRoles()
                     break;
                 case 'View all Employees':
-            
+                    viewEmployees()
                     break;
                 case 'Add a Department':
                 
@@ -57,11 +61,8 @@ const startInquirer = () => {
                     startInquirer()
                     break;
             }
-
-
             console.log(answer)
         })
 }
-
 
 module.exports = startInquirer
